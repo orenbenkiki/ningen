@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 import os
+import sys
+sys.path.insert(0, os.path.abspath('..'))
 
 extensions = [
     'sphinx.ext.autodoc',
@@ -13,6 +15,8 @@ autosectionlabel_prefix_document = True
 nitpicky = True
 nitpick_ignore = [
     ('py:obj', 'typing.Union'),
+    ('py:class', 'collections.abc.Sequence'),
+    ('py:class', 're.Pattern'),
 ]
 
 templates_path = ['_templates']
@@ -27,8 +31,6 @@ author = "Oren Ben-Kiki"
 
 version = "0.1.0"
 release = version
-
-language = None
 
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 

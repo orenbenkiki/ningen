@@ -127,7 +127,8 @@ class Writer:
 
     def variable(self, name: str, value: Value) -> None:
         """
-        Create a global ``ninja`` variable with some string ``name`` and some :py:class:`Value` ``value``.
+        Create a global ``ninja`` variable with some string ``name`` and some
+        :py:class:`ningen.value.Value` ``value``.
         """
         self._statements.append(Variable(key=name, value=value_as_list(value)))
 
@@ -151,7 +152,8 @@ class Writer:
         rspfile_content: Optional[Value] = None,
     ) -> None:
         """
-        Create a ``ninja`` rule with some string ``name`` and some :py:class:`Value` ``command``.
+        Create a ``ninja`` rule with some string ``name`` and some :py:class:`ningen.value.Value`
+        ``command``.
 
         See the ``ninja`` documentation for the semantics of the arguments.
         """
@@ -185,7 +187,8 @@ class Writer:
         **variables: Value,
     ) -> None:
         """
-        Create a ``ninja`` build statement for some :py:class:`Value` ``outputs`` using some named ``rule``.
+        Create a ``ninja`` build statement for some :py:class:`ningen.value.Value` ``outputs`` using
+        some named ``rule``.
 
         If ``override`` is ``True``, then this build statement will override any previous build
         statement(s) that were specified for any of the output(s), by simply removing them from the

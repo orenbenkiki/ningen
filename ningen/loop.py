@@ -24,11 +24,11 @@ def foreach(  # pylint: disable=too-many-branches
     """
     Execute code with captured values.
 
-    The ``pattern`` should be a capture pattern (see :py:class:`Capture` for details) or a list of
-    such patterns (which presumably capture the same set of named parts of the file name). In each
-    invocation of the loop body, the captured named parts are made available (as global variables)
-    to the code so they can be used directly. In addition, ``foreach`` will provide the full matched
-    path as the loop variable.
+    The ``pattern`` should be a capture pattern (see :py:class:`ningen.capture.Capture` for details)
+    or a list of such patterns (which presumably capture the same set of named parts of the file
+    name). In each invocation of the loop body, the captured named parts are made available (as
+    global variables) to the code so they can be used directly. In addition, ``foreach`` will
+    provide the full matched path as the loop variable.
 
     If additional named parameters (``kwargs``) are given, then they are also made available to the
     code. If one or more of these have a list of values, then the code will be invoked for each

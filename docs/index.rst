@@ -6,7 +6,7 @@ Ningen 0.1.0 Documentation
    :caption: Contents:
 
    README <readme>
-   API
+   modules
 
 Indices and tables
 ==================

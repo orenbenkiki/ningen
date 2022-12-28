@@ -137,6 +137,23 @@ clean-test:
 	rm -rf .coverage htmlcov/ .pytest_cache
 	find . -name '*.py[co]' -o -name '__pycache__' -exec rm -rf {} +
 
+### DOCS
+
+on-push: docs
+
+.PHONY: docs
+docs: docs/build/html/index.html  ## Build the documentation
+
+docs/build/html/index.html: $(PY_SOURCE_FILES) $(DOCS_SOURCE_FILES) $(RST_SOURCE_FILES)
+	@rm -rf docs/build -f docs/$(PROJECT_NAME).rst docs/modules.rst
+	sphinx-apidoc -o docs/ $(PROJECT_NAME)
+	cd docs && python -m sphinx -M html . build $(SPHINXOPTS)
+
+clean: clean-docs
+
+clean-docs:
+	rm -rf docs/build
+
 ## FORMATTED
 
 on-push: formatted

@@ -1,4 +1,3 @@
-*py.class
 _build
 build
 .cache
@@ -8,6 +7,8 @@ build
 coverage.xml
 develop-eggs
 dist
+docs/modules.rst
+docs/ningen.rst
 downloads
 *.egg
 *.egg-info
@@ -26,6 +27,7 @@ nosetests.xml
 pip-delete-this-directory.txt
 pip-log.txt
 _pycache__
+*py.class
 *.py[cod]
 .pytest_cache
 .Python
