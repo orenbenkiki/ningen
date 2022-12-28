@@ -1,4 +1,4 @@
-Ningen 0.1.0 Documentation
+Ningen 0.2.0 Documentation
 ==========================
 
 .. toctree::

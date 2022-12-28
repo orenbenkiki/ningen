@@ -29,7 +29,7 @@ project = 'ningen'
 copyright = "2022, Oren Ben-Kiki"
 author = "Oren Ben-Kiki"
 
-version = "0.1.0"
+version = "0.2.0"
 release = version
 
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
