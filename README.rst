@@ -1,6 +1,10 @@
 Ningen 0.1.0 - Ninja Build Generation
 =====================================
 
+.. image:: https://readthedocs.org/projects/ningen/badge/?version=latest
+    :target: https://ningen.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
 This package allows a Python script to use file system operations (such as ``glob``) and/or apply
 any other logic (such as reading structured configuration files) to generate a ``build.ninja`` file.
 
