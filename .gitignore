@@ -8,7 +8,7 @@ coverage.xml
 develop-eggs
 dist
 docs/modules.rst
-docs/ningen.rst
+docs/ningen*.rst
 downloads
 *.egg
 *.egg-info

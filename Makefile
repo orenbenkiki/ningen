@@ -145,14 +145,13 @@ on-push: docs
 docs: docs/build/html/index.html  ## Build the documentation
 
 docs/build/html/index.html: $(PY_SOURCE_FILES) $(DOCS_SOURCE_FILES) $(RST_SOURCE_FILES)
-	@rm -rf docs/build -f docs/$(PROJECT_NAME).rst docs/modules.rst
-	sphinx-apidoc -o docs/ $(PROJECT_NAME)
+	@rm -rf docs/build docs/$(PROJECT_NAME)*.rst docs/modules.rst
 	cd docs && python -m sphinx -M html . build $(SPHINXOPTS)
 
 clean: clean-docs
 
 clean-docs:
-	rm -rf docs/build
+	rm -rf docs/build docs/$(PROJECT_NAME)*.rst docs/modules.rst
 
 ## FORMATTED
 

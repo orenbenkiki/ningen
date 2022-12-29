@@ -1,11 +1,9 @@
-Ningen 0.2.0 Documentation
-==========================
+.. include:: ../README.rst
 
 .. toctree::
    :maxdepth: 1
    :caption: Contents:
 
-   README <readme>
    modules
 
 Indices and tables
