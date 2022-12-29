@@ -1,8 +1,6 @@
 """
 Execute code with captured values.
 """
-from inspect import stack
-from typing import Any
 from typing import Dict
 from typing import Iterator
 from typing import List
@@ -20,41 +18,34 @@ __all__ = ["foreach", "expand"]
 
 def foreach(  # pylint: disable=too-many-branches
     pattern: Optional[Value] = None, **kwargs: Value
-) -> Iterator[Optional[str]]:
+) -> Iterator[Optional[Capture]]:
     """
     Execute code with captured values.
 
-    The ``pattern`` should be a capture pattern (see :py:class:`ningen.capture.Capture` for details)
-    or a list of such patterns (which presumably capture the same set of named parts of the file
-    name). In each invocation of the loop body, the captured named parts are made available (as
-    global variables) to the code so they can be used directly. In addition, ``foreach`` will
-    provide the full matched path as the loop variable.
+    The ``pattern`` should be a capture pattern (see :py:class:`ningen.capture.Capture` for details) or a list of such
+    patterns (which presumably capture the same set of named parts of the file name).
 
-    If additional named parameters (``kwargs``) are given, then they are also made available to the
-    code. If one or more of these have a list of values, then the code will be invoked for each
-    combination of the values. If no pattern is given, then the code will be invoked only for
-    these combinations, and ``foreach`` will return ``None`` values.
+    If additional named parameters (``kwargs``) are given, then the iterated capture is extended with each combination
+    of these values.
 
     For example:
 
     .. code-block:: python
 
-        for path in foreach("foo/{*name}.cc"):
-            assert path == f"foo/{name}.cc"
-            print(f"foo/{name}.cc exists on disk")
+        for c in foreach("foo/{*name}.cc"):
+            assert c.path == f"foo/{name}.cc"
+            print(f"foo/{c.name}.cc exists on disk")
 
-        for _ in foreach("foo/{*name}.cc", mode=["debug", "release"], compiler=["gcc", "clang"]):
-            print(f"compile foo/{name}.cc using the {compiler} compiler in {mode} mode")
+        for c in foreach("foo/{*name}.cc", mode=["debug", "release"], compiler=["gcc", "clang"]):
+            print(f"compile foo/{c.name}.cc using the {c.compiler} compiler in {c.mode} mode")
 
-        for none in foreach(mode=["debug", "release"], compiler=["gcc", "clang"]):
-            assert none is None
-            print(f"final link step using the {compiler} compiler in {mode} mode")
+        for c in foreach(mode=["debug", "release"], compiler=["gcc", "clang"]):
+            print(f"final link step using the {c.compiler} compiler in {c.mode} mode")
     """
     if pattern is None:
         if not kwargs:
             return
-
-        captured = [Capture(value=None, parts={})]  # type: ignore
+        captured = [Capture()]  # type: ignore
 
     else:
         patterns = value_as_list(pattern)
@@ -68,47 +59,23 @@ def foreach(  # pylint: disable=too-many-branches
         if not captured:
             return
 
-    global_values = stack()[1][0].f_globals
-
     variables = values_dict(kwargs or {})
     for capture in captured:
         for name in variables:
-            if name in capture.parts:
+            if name in capture.__dict__:
                 raise ValueError(f"overriding the value of the captured: {name}")
-        capture.parts.update(variables)  # type: ignore
-
-        data: Dict[str, str] = {}
-        for _ in _foreach(data, list(capture.parts.items())):
-
-            old_values: Dict[str, Any] = {}
-            created_values: List[str] = []
-
-            for name, value in data.items():
-                if value in global_values:
-                    old_values[name] = global_values[name]
-                else:
-                    created_values.append(name)
-                global_values[name] = value
-
-            yield capture.value
-
-            for name, value in old_values.items():
-                global_values[name] = value
-
-            for name in created_values:
-                del global_values[name]
+        yield from _foreach(capture.__dict__, list(variables.items()))
 
 
-def _foreach(data: Dict[str, str], items: List[Tuple[str, Value]]) -> Iterator[None]:
+def _foreach(data: Dict[str, str], items: List[Tuple[str, Value]]) -> Iterator[Capture]:
     if not items:
-        yield None
+        yield Capture(**data)
 
     else:
         name, values = items[0]
         for value in value_as_list(values):
             data[name] = value
-            for _ in _foreach(data, items[1:]):
-                yield None
+            yield from _foreach(data, items[1:])
 
 
 def expand(template: Value, **kwargs: Value) -> List[str]:

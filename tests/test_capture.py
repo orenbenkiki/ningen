@@ -161,11 +161,11 @@ class TestValidCapture(TestCase):
 class TestMatchCapture(TestCase):
     def check_pattern(self, *, pattern: str, captured: Dict[str, Optional[Dict[str, str]]]) -> None:
         for value, expected_captured in captured.items():
-            must_match = expected_captured is not None
-            actual_captured = captures(pattern, value, must_match=must_match)
-            if must_match:
+            actual_captured = captures(pattern, value, must_match=expected_captured is not None)
+            if expected_captured is not None:
+                expected_captured["path"] = value
                 assert len(actual_captured) == 1
-                self.assertEqual(actual_captured[0].parts, expected_captured)
+                self.assertEqual(actual_captured[0].__dict__, expected_captured)
             else:
                 assert len(actual_captured) == 0
 
@@ -198,11 +198,11 @@ class TestGlobCapture(TestWithFiles):
         for path, expected_captured in captured.items():
             self.touch(path)
 
-            must_match = expected_captured is not None
             actual_captured = globs(pattern)
-            if must_match:
+            if expected_captured is not None:
                 assert len(actual_captured) == 1
-                self.assertEqual(actual_captured[0].parts, expected_captured)
+                expected_captured["path"] = path
+                self.assertEqual(actual_captured[0].__dict__, expected_captured)
             else:
                 assert len(actual_captured) == 0
 

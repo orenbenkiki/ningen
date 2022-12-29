@@ -45,21 +45,23 @@ class Capture:
 
         Use ``/{**name}/`` instead of ``/{*name:**}/`` as the shorthand is given special treatment
         allow for capturing an empty sub-directory (that is, match a single ``/``).
+
+    The captured named values are available as members of the object, that is, write
+    ``capture.foo`` to access the value of a captured ``{*foo}``.
     """
 
-    #: The value of the whole string that was matched with the capture pattern (typically, a path
-    #: name).
-    value: Optional[str]
-
-    #: The captured named parts of the value.
-    parts: Dict[str, str]
+    def __init__(self, **kwargs: str) -> None:
+        self.__dict__.update(kwargs)
 
 
-def captures(pattern: str, values: Value, *, must_match: bool = False) -> List[Capture]:
+def captures(pattern: str, values: Value, *, must_match: bool = False, name: str = "path") -> List[Capture]:
     """
     Given a capture ``pattern``, return all the :py:class:`Capture` results of applying it to each
     of the ``values``. If ``must_match``, all the values must match the pattern. Otherwise, only
     captures of matching values are returned.
+
+    By default, the complete matched string is made available in a data member ``path`` (as this is typically used to
+    parse disk file paths). You can override this by specifying a different ``name``.
 
     See :py:class:`Capture` for the description of the capture pattern.
     """
@@ -69,7 +71,8 @@ def captures(pattern: str, values: Value, *, must_match: bool = False) -> List[C
     for value in value_as_list(values):
         parts = _capture_string_parts(regexp, value)
         if parts is not None:
-            results.append(Capture(value=value, parts=parts))
+            parts[name] = value
+            results.append(Capture(**parts))
         elif must_match:
             raise ValueError(f"the value: {value} does not match the pattern: {pattern}")
 

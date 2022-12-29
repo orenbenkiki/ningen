@@ -36,5 +36,5 @@ setup(  #
     tests_require=test_requirements,
     extras_require = {"dev": dev_requirements},
     url="https://github.com/orenbenkiki/ningen.git",
-    version="0.3.0",
+    version="0.4.0",
 )

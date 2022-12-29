@@ -1,4 +1,4 @@
-Ningen 0.3.0 - Ninja Build Generation
+Ningen 0.4.0 - Ninja Build Generation
 =====================================
 
 .. image:: https://readthedocs.org/projects/ningen/badge/?version=latest
@@ -47,10 +47,10 @@ For example:
 
     # Ningen provides the "foreach" function,
     # which iterates on existing files and/or variable values:
-    for cc_file in ng.foreach('src/{*name}.cc', mode=modes):
+    for c in ng.foreach('src/{*name}.cc', mode=modes):
         objects.append(name)
-        writer.build(f'obj/{compiler}/{name}.o', f'compile_{mode}',
-                     inputs=[cc_file, ...], ...)
+        writer.build(f'obj/{c.mode}/{c.name}.o', f'compile_{c.mode}',
+                     inputs=[c.path, ...], ...)
 
     # Since it buffers the data, ningen allows overriding previous build statements:
     writer.rule('special_compile_debug', ...)
