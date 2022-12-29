@@ -1,4 +1,4 @@
-Ningen 0.2.0 - Ninja Build Generation
+Ningen 0.3.0 - Ninja Build Generation
 =====================================
 
 .. image:: https://readthedocs.org/projects/ningen/badge/?version=latest

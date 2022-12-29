@@ -4,7 +4,7 @@ Generate ``ninja`` build files.
 
 __author__ = "Oren Ben-Kiki"
 __email__ = "oren@ben-kiki.org"
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 from .capture import *
 from .loop import *

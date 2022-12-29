@@ -14,13 +14,14 @@ setup(  #
     author_email="oren@ben-kiki.org",
     python_requires=">=3.7",
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
         "Natural Language :: English",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
     ],
     description="Ninja Build Generation",
     install_requires=requirements,
@@ -35,5 +36,5 @@ setup(  #
     tests_require=test_requirements,
     extras_require = {"dev": dev_requirements},
     url="https://github.com/orenbenkiki/ningen.git",
-    version="0.2.0",
+    version="0.3.0",
 )
