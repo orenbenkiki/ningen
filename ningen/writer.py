@@ -7,6 +7,8 @@ targets, which makes it easier to use in a pattern-based generation policy.
 from abc import ABC
 from abc import abstractmethod
 from dataclasses import dataclass
+from os import makedirs
+from os.path import dirname
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -31,6 +33,14 @@ class Statement(ABC):  # pylint: disable=too-few-public-methods
 
 
 @dataclass
+class Comment(Statement):
+    text: str
+
+    def raw_write(self, raw_writer: RawWriter) -> None:
+        raw_writer.comment(**self.__dict__)
+
+
+@dataclass
 class Variable(Statement):
     key: str
     value: List[str]
@@ -48,11 +58,12 @@ class Pool(Statement):
         raw_writer.pool(**self.__dict__)
 
 
-@dataclass
-class Rule(Statement):  # pylint: disable=too-many-instance-attributes
+@dataclass  # pylint: disable=too-many-instance-attributes
+class Rule(Statement):
     name: str
     command: List[str]
     description: List[str]
+    pool: Optional[str]
     depfile: Optional[str]
     deps: Optional[str]
     generator: bool
@@ -121,9 +132,23 @@ class Writer:
             functionality. Specifically it allows overriding "default" build statements with more
             specific ones.
         """
-        raw_writer = RawWriter(output=output, width=width)
-        for statement in self._statements:
-            statement.raw_write(raw_writer)
+        if isinstance(output, str):
+            directory = dirname(output)
+            if directory:
+                makedirs(directory, exist_ok=True)
+            with open(output, "w", encoding="utf8") as file:
+                self.write(output=file, width=width)
+
+        else:
+            raw_writer = RawWriter(output=output, width=width)
+            for statement in self._statements:
+                statement.raw_write(raw_writer)
+
+    def comment(self, text: str) -> None:
+        """
+        Create a global ``ninja`` comment with some string ``text``.
+        """
+        self._statements.append(Comment(text=text))
 
     def variable(self, name: str, value: Value) -> None:
         """
@@ -147,6 +172,7 @@ class Writer:
         depfile: Optional[str] = None,
         deps: Optional[str] = None,
         generator: bool = False,
+        pool: Optional[str] = None,
         restat: bool = False,
         rspfile: Optional[str] = None,
         rspfile_content: Optional[Value] = None,
@@ -165,6 +191,7 @@ class Writer:
                 depfile=depfile,
                 deps=deps,
                 generator=generator,
+                pool=pool,
                 restat=restat,
                 rspfile=rspfile,
                 rspfile_content=value_as_list(rspfile_content),

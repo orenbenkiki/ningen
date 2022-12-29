@@ -8,7 +8,8 @@ from tests import TestWithFiles
 
 
 class TestForeach(TestWithFiles):
-    def test_foreach_nothing(self):
+    @staticmethod
+    def test_foreach_nothing():
         for capture in foreach():
             print(capture)
             assert False

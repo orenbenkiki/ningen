@@ -31,13 +31,15 @@ class TestWithFiles(TestCase):
         chdir(self.previous_directory)
         rmtree(self.temporary_directory)
 
-    def touch(self, path: str) -> None:
+    @staticmethod
+    def touch(path: str) -> None:
         directory = dirname(path)
         if directory:
             makedirs(directory, exist_ok=True)
         open(path, "w").close()
 
-    def cleanUp(self) -> None:
+    @staticmethod
+    def cleanUp() -> None:
         for path in glob("*"):
             if isdir(path):
                 rmtree(path)

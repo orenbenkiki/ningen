@@ -17,6 +17,7 @@ nitpick_ignore = [
     ('py:obj', 'typing.Union'),
     ('py:class', 'collections.abc.Sequence'),
     ('py:class', 're.Pattern'),
+    ('py:class', 'TextIO'),
 ]
 
 templates_path = ['_templates']
