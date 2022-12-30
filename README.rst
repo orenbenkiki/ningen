@@ -41,14 +41,14 @@ For example:
     writer = ng.Writer()
 
     modes = ['debug', 'release']
-    objects = []
+    names = set()
     writer.rule('compile_debug', ...)
     writer.rule('compile_release', ...)
 
     # Ningen provides the "foreach" function,
     # which iterates on existing files and/or variable values:
     for c in ng.foreach('src/{*name}.cc', mode=modes):
-        objects.append(name)
+        names.add(name)
         writer.build(f'obj/{c.mode}/{c.name}.o', f'compile_{c.mode}',
                      inputs=[c.path, ...], ...)
 
@@ -61,7 +61,7 @@ For example:
     for mode in modes:
         writer.build('bin/{mode}/program', f'link_{mode}',
                      inputs=ng.expand('obj/{mode}/{object}.o',
-                                      mode=mode, object=objects))
+                                      mode=mode, object=names))
 
     # Actually write the buffered ninja build file (by default, to "build.ninja"):
     writer.write()

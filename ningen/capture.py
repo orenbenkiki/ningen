@@ -56,9 +56,9 @@ class Capture:
 
 def captures(pattern: str, values: Value, *, must_match: bool = False, name: str = "path") -> List[Capture]:
     """
-    Given a capture ``pattern``, return all the :py:class:`Capture` results of applying it to each
-    of the ``values``. If ``must_match``, all the values must match the pattern. Otherwise, only
-    captures of matching values are returned.
+    Given a capture ``pattern``, return all the :py:class:`Capture` results of applying it to each of the (sorted,
+    unique, non-``None``) ``values``. If ``must_match``, all the values must match the pattern. Otherwise, only captures
+    of matching values are returned.
 
     By default, the complete matched string is made available in a data member ``path`` (as this is typically used to
     parse disk file paths). You can override this by specifying a different ``name``.
@@ -68,7 +68,7 @@ def captures(pattern: str, values: Value, *, must_match: bool = False, name: str
     results: List[Capture] = []
     regexp = capture2re(pattern)
 
-    for value in value_as_list(values):
+    for value in sorted(set(value_as_list(values))):
         parts = _capture_string_parts(regexp, value)
         if parts is not None:
             parts[name] = value

@@ -23,10 +23,12 @@ def foreach(  # pylint: disable=too-many-branches
     Execute code with captured values.
 
     The ``pattern`` should be a capture pattern (see :py:class:`ningen.capture.Capture` for details) or a list of such
-    patterns (which presumably capture the same set of named parts of the file name).
+    patterns (which presumably capture the same set of named parts of the file name). The ``foreach`` code will loop
+    on the (sorted, unique, non-``None``) such patterns.
 
-    If additional named parameters (``kwargs``) are given, then the iterated capture is extended with each combination
-    of these values.
+    Additional named parameters (``kwargs``) are supported. If one or more of these has a list of values, then a capture
+    will be generated for every (sorted, unique, non-``None``) combination of the values for each of the captured paths,
+    or just once if no ``pattern`` was specified.
 
     For example:
 
@@ -48,7 +50,7 @@ def foreach(  # pylint: disable=too-many-branches
         captured = [Capture()]  # type: ignore
 
     else:
-        patterns = value_as_list(pattern)
+        patterns = sorted(set(value_as_list(pattern)))
         if not patterns:
             return
 
@@ -60,7 +62,7 @@ def foreach(  # pylint: disable=too-many-branches
             return
 
     variables = values_dict(kwargs or {})
-    for capture in captured:
+    for capture in sorted(captured, key=lambda capture: capture.__dict__.get("path", "none")):
         for name in variables:
             if name in capture.__dict__:
                 raise ValueError(f"overriding the value of the captured: {name}")
@@ -73,7 +75,7 @@ def _foreach(data: Dict[str, str], items: List[Tuple[str, Value]]) -> Iterator[C
 
     else:
         name, values = items[0]
-        for value in value_as_list(values):
+        for value in sorted(set(value_as_list(values))):
             data[name] = value
             yield from _foreach(data, items[1:])
 
@@ -83,11 +85,11 @@ def expand(template: Value, **kwargs: Value) -> List[str]:
     Generate multiple formatted strings using all the combinations of the provided named values
     (``kwargs``).
 
-    The ``template`` should be a normal Python format (using ``{name}``). If this is a list, then
-    the result will contain the strings generated from all the non-``None`` templates in the list.
+    The ``template`` should be a normal Python format (using ``{name}``). If this is a list, then the result will
+    contain the strings generated from all the (sorted, unique, non-``None``) templates in the list.
 
-    Additional named parameters (``kwargs``) are expected. If one or more of these has a list
-    of values, then a string will be generated for every combination of the values.
+    Additional named parameters (``kwargs``) are expected. If one or more of these has a list of values, then a string
+    will be generated for every (sorted, unique, non-``None``) combination of the values
 
     For example:
 
@@ -99,7 +101,7 @@ def expand(template: Value, **kwargs: Value) -> List[str]:
             == ['obj/debug/foo.o', 'obj/debug/bar.o', 'obj/release/foo.o', 'obj/release/bar.o']
     """
     results: List[str] = []
-    templates = value_as_list(template)
+    templates = sorted(set(value_as_list(template)))
     if templates and kwargs:
         _collect(templates, {}, list(values_dict(kwargs).items()), results)
     return results
@@ -112,6 +114,6 @@ def _collect(templates: List[str], data: Dict[str, str], items: List[Tuple[str, 
         return
 
     name, values = items[0]
-    for value in value_as_list(values):
+    for value in sorted(set(value_as_list(values))):
         data[name] = value
         _collect(templates, data, items[1:], results)
