@@ -4,6 +4,7 @@ Write ``ninja`` files.
 This is similar to a ``ninja_syntax.Writer``, but allows for overriding the build statement for
 targets, which makes it easier to use in a pattern-based generation policy.
 """
+
 from abc import ABC
 from abc import abstractmethod
 from dataclasses import dataclass
@@ -28,8 +29,7 @@ __all__ = ["Writer"]
 
 class Statement(ABC):  # pylint: disable=too-few-public-methods
     @abstractmethod
-    def raw_write(self, raw_writer: RawWriter) -> None:
-        ...
+    def raw_write(self, raw_writer: RawWriter) -> None: ...  # noqa: E704
 
 
 @dataclass
@@ -58,8 +58,8 @@ class Pool(Statement):
         raw_writer.pool(**self.__dict__)
 
 
-@dataclass  # pylint: disable=too-many-instance-attributes
-class Rule(Statement):
+@dataclass
+class Rule(Statement):  # pylint: disable=too-many-instance-attributes
     name: str
     command: List[str]
     description: List[str]
@@ -163,7 +163,7 @@ class Writer:
         """
         self._statements.append(Pool(name=name, depth=depth))
 
-    def rule(
+    def rule(  # pylint: disable=too-many-arguments
         self,
         name: str,
         command: Value,
@@ -198,7 +198,7 @@ class Writer:
             )
         )
 
-    def build(
+    def build(  # pylint: disable=too-many-arguments
         self,
         outputs: Value,
         rule: str,

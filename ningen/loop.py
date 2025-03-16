@@ -1,6 +1,7 @@
 """
 Execute code with captured values.
 """
+
 from typing import Dict
 from typing import Iterator
 from typing import List

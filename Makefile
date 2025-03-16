@@ -31,7 +31,7 @@ export PRINT_HELP_PYSCRIPT
 .PHONY: help
 .DEFAULT_GOAL: help
 help:
-	@python -c "$$PRINT_HELP_PYSCRIPT" $(MAKEFILE_LIST)
+	@python3 -c "$$PRINT_HELP_PYSCRIPT" $(MAKEFILE_LIST)
 
 # ON-PUSH
 
@@ -146,7 +146,7 @@ docs: docs/build/html/index.html  ## Build the documentation
 
 docs/build/html/index.html: $(PY_SOURCE_FILES) $(DOCS_SOURCE_FILES) $(RST_SOURCE_FILES)
 	@rm -rf docs/build docs/$(PROJECT_NAME)*.rst docs/modules.rst
-	cd docs && python -m sphinx -M html . build $(SPHINXOPTS)
+	cd docs && python3 -m sphinx -M html . build $(SPHINXOPTS)
 
 clean: clean-docs
 

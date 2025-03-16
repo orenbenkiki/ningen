@@ -1,6 +1,7 @@
 """
 Hold one or more values.
 """
+
 from collections import abc
 from typing import Dict
 from typing import List

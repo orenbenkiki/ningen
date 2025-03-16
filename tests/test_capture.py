@@ -57,7 +57,9 @@ class TestInvalidCapture(TestCase):
 
 
 class TestValidCapture(TestCase):
-    def check_pattern(self, *, pattern: str, glob: str, compiled: str, match: List[str], not_match: List[str]) -> None:
+    def check_pattern(  # pylint: disable=too-many-arguments
+        self, *, pattern: str, glob: str, compiled: str, match: List[str], not_match: List[str]
+    ) -> None:
         self.assertEqual(capture2glob(pattern), glob)
         regexp = capture2re(pattern)
         self.assertEqual(str(regexp), f"re.compile('{compiled}')")
@@ -171,25 +173,25 @@ class TestMatchCapture(TestCase):
 
     def test_one_star(self) -> None:
         self.check_pattern(
-            pattern="foo{*bar}baz", captured={"foo": None, "foobaz": dict(bar=""), "foobarbaz": dict(bar="bar")}
+            pattern="foo{*bar}baz", captured={"foo": None, "foobaz": {"bar": ""}, "foobarbaz": {"bar": "bar"}}
         )
 
     def test_two_stars(self) -> None:
         self.check_pattern(
             pattern="foo{**bar}baz",
-            captured={"foobaz": dict(bar=""), "foo/baz": dict(bar="/"), "foo/bar/baz": dict(bar="/bar/")},
+            captured={"foobaz": {"bar": ""}, "foo/baz": {"bar": "/"}, "foo/bar/baz": {"bar": "/bar/"}},
         )
 
     def test_sub_dirs(self) -> None:
         self.check_pattern(
             pattern="foo/{**bar}/baz",
-            captured={"foobaz": None, "foo/baz": dict(bar=""), "foo/bar/baz": dict(bar="bar")},
+            captured={"foobaz": None, "foo/baz": {"bar": ""}, "foo/bar/baz": {"bar": "bar"}},
         )
 
     def test_glob(self) -> None:
         self.check_pattern(
             pattern="foo{*bar:[0-9]}baz",
-            captured={"fooQbaz": None, "foo1baz": dict(bar="1")},
+            captured={"fooQbaz": None, "foo1baz": {"bar": "1"}},
         )
 
 
@@ -211,5 +213,5 @@ class TestGlobCapture(TestWithFiles):
     def test_glob(self) -> None:
         self.check_pattern(
             pattern="foo{*bar:[0-9]}baz",
-            captured={"fooQbaz": None, "foo1baz": dict(bar="1")},
+            captured={"fooQbaz": None, "foo1baz": {"bar": "1"}},
         )
